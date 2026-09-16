@@ -30,3 +30,31 @@ Accumulated tips, patterns, and "aha" moments from working with Claude Code acro
 - To see your memories: run `/memory` in Claude Code, or browse `~/.claude/projects/` in Finder
 
 **When it's useful:** Understanding why Claude "remembers" things between sessions, cleaning up stale memories, or debugging when it acts on outdated info.
+
+---
+
+## 2. The /memory Menu vs Auto-Memory (2026-09-15)
+
+**What:** `/memory` shows 4 options that are actually two separate systems. Easy to confuse.
+
+**The /memory menu:**
+
+| # | Option | File | Scope |
+|---|--------|------|-------|
+| 1 | Parent CLAUDE.md(s) | Any `CLAUDE.md` in parent directories | All repos under that parent folder |
+| 2 | Project memory | `./CLAUDE.md` in current repo | This repo only |
+| 3 | User memory | `~/.claude/CLAUDE.md` | Every project on your machine |
+| 4 | Open auto-memory folder | `~/.claude/projects/.../memory/` | This repo only |
+
+**Key distinction:**
+- Options 1-3 are **CLAUDE.md files** — manually edited, contain instructions/rules
+- Option 4 is **auto-memory** — files Claude creates automatically (user_, feedback_, project_ prefixes)
+
+**CLAUDE.md hierarchy:** Claude Code walks UP the directory tree and loads every CLAUDE.md it finds. It does NOT look sideways into sibling folders. So a parent-level CLAUDE.md is shared by all child repos, but sibling repos don't see each other's CLAUDE.md.
+
+**User memory vs Parent CLAUDE.md:**
+- User memory (`~/.claude/CLAUDE.md`) — global, applies everywhere on your machine
+- Parent CLAUDE.md — applies only to repos under that specific parent folder
+- User memory does NOT auto-populate. You have to write to it manually.
+
+**When it's useful:** Knowing where to put instructions depending on how broadly they should apply. Global preferences (no AI slop, OS constraints) go in User memory. Shared project instructions go in a parent CLAUDE.md.
