@@ -58,3 +58,51 @@ Accumulated tips, patterns, and "aha" moments from working with Claude Code acro
 - User memory does NOT auto-populate. You have to write to it manually.
 
 **When it's useful:** Knowing where to put instructions depending on how broadly they should apply. Global preferences (no AI slop, OS constraints) go in User memory. Shared project instructions go in a parent CLAUDE.md.
+
+---
+
+## 3. Full Loading Sequence — What Claude Knows Before You Type (2026-09-15)
+
+**What:** The complete order of everything Claude Code loads when you open a new terminal in a repo.
+
+**Step 1: System prompt (built into Claude Code)**
+- Tool usage rules, tone, safety, how to commit/create PRs
+- You never see this, can't edit it
+
+**Step 2: User memory (global)**
+- `~/.claude/CLAUDE.md`
+- Applies to every project on your machine
+- Example: "No AI slop, macOS Big Sur, GitHub username"
+
+**Step 3: Parent CLAUDE.md (walks up the directory tree)**
+- Every `CLAUDE.md` found in parent folders above the current repo
+- Example: `~/Desktop/AI Learning/CLAUDE.md` — shared pointers for all repos in that folder
+
+**Step 4: Project CLAUDE.md**
+- `./CLAUDE.md` in the current repo
+- The main instruction set for this specific project
+
+**Step 5: Auto-memory index**
+- `~/.claude/projects/<path-encoded-dir>/memory/MEMORY.md`
+- One-line summaries of all saved memories (user, feedback, project, reference)
+
+**Step 6: Git status snapshot**
+- Current branch, staged/unstaged changes, recent commits
+
+**Step 7: Metadata**
+- Today's date, OS version, model name, available skills/agents/tools
+
+**Step 8: Instruction-driven context (on first interaction)**
+- Files that the Project CLAUDE.md tells Claude to read at session start
+- These are project-specific — whatever the CLAUDE.md says to load
+
+**Steps 1-7 are in Claude's head before you say a word. Step 8 happens on the first interaction.**
+
+**Beyond Step 8 — on-demand loading:**
+Everything else is pulled in only when the conversation needs it. Examples:
+- "Create a tailored resume" → Claude loads the skill file (`.claude/skills/resume-tailor.md`), reads the JD, and pulls relevant experience from the context library
+- "Prep me for an interview at Stripe" → Claude checks `insider-data/company-intel/stripe.md` for interview intel
+- "Write me a LinkedIn comment" → Claude reads the framework from a sibling repo because the Parent CLAUDE.md points to it
+- "What's my Banyan status?" → Claude reads the individual auto-memory file (`project_banyan_status.md`) referenced in the MEMORY.md index
+
+The pattern: Steps 1-8 are automatic context. Everything after is Claude reaching for the right file based on what you ask.
